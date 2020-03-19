@@ -21,6 +21,12 @@ public class Rocket : MonoBehaviour
 
 	void	ProcessInput()
 	{
+		Thrust();
+		Rotate();
+	}
+
+	void	Thrust()
+	{
 		if (Input.GetKey(KeyCode.Space)) /** Thruster */
 		{
 			print("Space is pressed");
@@ -32,6 +38,11 @@ public class Rocket : MonoBehaviour
 		{
 			A_RocketRumble.Stop();
 		}
+	}
+
+	void	Rotate()
+	{
+		RB_Rocket.freezeRotation = true;
 		if (Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A)) /** Tilt left */
 		{
 			print("Left Arrow is pressed");
@@ -42,9 +53,6 @@ public class Rocket : MonoBehaviour
 			print("Right Arrow is pressed");
 			transform.Rotate(-Vector3.forward);
 		}
-		else
-		{
-			;
-		}
+		RB_Rocket.freezeRotation = false;
 	}
 }
