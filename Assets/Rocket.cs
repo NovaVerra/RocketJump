@@ -33,7 +33,6 @@ public class Rocket : MonoBehaviour
 		if (Input.GetKey(KeyCode.Space)) /** Thruster */
 		{
 			float	ThrustThisFrame = MainThrust * Time.deltaTime;
-			print("Space is pressed");
 			RB_Rocket.AddRelativeForce(Vector3.up * ThrustThisFrame);
 			if (!A_RocketRumble.isPlaying)
 				A_RocketRumble.Play();
@@ -46,20 +45,33 @@ public class Rocket : MonoBehaviour
 
 	void	Rotate()
 	{
-
 		RB_Rocket.freezeRotation = true;
 		if (Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A)) /** Tilt left */
 		{
 			float	RotationThisFrame = RcsThrust * Time.deltaTime;
-			print("Left Arrow is pressed");
 			transform.Rotate(Vector3.forward * RotationThisFrame);
 		}
 		else if (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D)) /** Tilt right */
 		{
 			float	RotationThisFrame = RcsThrust * Time.deltaTime;
-			print("Right Arrow is pressed");
 			transform.Rotate(-Vector3.forward * RotationThisFrame);
 		}
 		RB_Rocket.freezeRotation = false;
+	}
+
+	void	OnCollisionEnter(Collision CollisionEvent)
+	{
+		switch (CollisionEvent.gameObject.tag)
+		{
+			case "Friendly":
+				// do nothing
+				break;
+			case "Fuel":
+				print("You have obtained FUEL");
+				break;
+			default:
+				print("You DIED");
+				break;
+		}
 	}
 }
