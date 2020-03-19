@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 using UnityEngine;
 
 public class Rocket : MonoBehaviour
@@ -66,11 +67,13 @@ public class Rocket : MonoBehaviour
 			case "Friendly":
 				// do nothing
 				break;
-			case "Fuel":
-				print("You have obtained FUEL");
+			case "Win":
+				print("You won the game!");
+				SceneManager.LoadScene(1);
 				break;
 			default:
-				print("You DIED");
+				print("You DIED!");
+				SceneManager.LoadScene(0);
 				break;
 		}
 	}
