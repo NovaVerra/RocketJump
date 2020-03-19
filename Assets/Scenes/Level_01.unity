@@ -1493,6 +1493,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_LandingPad
       objectReference: {fileID: 0}
+    - target: {fileID: 749528610800478344, guid: afcdb026d2dd24599abd67dfc6e3e979,
+        type: 3}
+      propertyPath: m_TagString
+      value: Win
+      objectReference: {fileID: 0}
     - target: {fileID: 6324100545862516874, guid: afcdb026d2dd24599abd67dfc6e3e979,
         type: 3}
       propertyPath: m_LocalPosition.x
