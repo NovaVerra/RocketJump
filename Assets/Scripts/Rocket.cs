@@ -5,10 +5,14 @@ using UnityEngine;
 
 public class Rocket : MonoBehaviour
 {
-	Rigidbody		RB_Rocket;
-	AudioSource		A_RocketRumble;
+	Rigidbody				RB_Rocket;
+	AudioSource				A_RocketRumble;
 	[SerializeField] float	RcsThrust = 300f;
 	[SerializeField] float	MainThrust = 300f;
+
+	enum					GameState { Alive, Dying, Transcending };
+	GameState				State = GameState.Alive;
+	int						Level = 0;
 
 	// Start is called before the first frame update
 	void	Start()
@@ -25,8 +29,11 @@ public class Rocket : MonoBehaviour
 
 	void	ProcessInput()
 	{
-		Thrust();
-		Rotate();
+		if (State == GameState.Alive)
+		{
+			Thrust();
+			Rotate();
+		}
 	}
 
 	void	Thrust()
@@ -62,19 +69,32 @@ public class Rocket : MonoBehaviour
 
 	void	OnCollisionEnter(Collision CollisionEvent)
 	{
+		if (State != GameState.Alive) { return; }
 		switch (CollisionEvent.gameObject.tag)
 		{
 			case "Friendly":
 				// do nothing
 				break;
 			case "Win":
-				print("You won the game!");
-				SceneManager.LoadScene(1);
+				State = GameState.Transcending;
+				Invoke("LoadNextLevel", 1f);
 				break;
 			default:
-				print("You DIED!");
-				SceneManager.LoadScene(0);
+				State = GameState.Dying;
+				Invoke("LoadFirstLevel", 1f);
 				break;
 		}
+	}
+
+	void	LoadNextLevel()
+	{
+		SceneManager.LoadScene(1);
+		State = GameState.Alive;
+	}
+
+	void	LoadFirstLevel()
+	{
+		SceneManager.LoadScene(0);
+		State = GameState.Alive;
 	}
 }
