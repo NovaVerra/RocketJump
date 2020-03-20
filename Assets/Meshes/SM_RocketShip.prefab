@@ -252,8 +252,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0c429664f9934176be1c49802bdb477, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  RcsThrust: 250
+  RcsThrust: 200
   MainThrust: 1000
+  EngineThrust: {fileID: 8300000, guid: f646b53c4043d475d90697dfd3457e45, type: 3}
+  OnDeath: {fileID: 8300000, guid: d10a8f11c14a644b9a58f1a9b79261fa, type: 3}
+  OnWin: {fileID: 8300000, guid: 268c89210cd8a4639af662463dc54067, type: 3}
 --- !u!1 &2928607888605002803
 GameObject:
   m_ObjectHideFlags: 0

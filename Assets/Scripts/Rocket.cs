@@ -5,11 +5,17 @@ using UnityEngine;
 
 public class Rocket : MonoBehaviour
 {
-	Rigidbody				RB_Rocket;
-	AudioSource				A_RocketRumble;
-	[SerializeField] float	RcsThrust = 300f;
-	[SerializeField] float	MainThrust = 300f;
 
+	/** Game Configurations */
+	Rigidbody	RB_Rocket;
+	AudioSource	A_Audio;
+	[SerializeField] float		RcsThrust = 300f;
+	[SerializeField] float		MainThrust = 300f;
+	[SerializeField] AudioClip	EngineThrust;
+	[SerializeField] AudioClip	OnDeath;
+	[SerializeField] AudioClip	OnWin;
+
+	/** Game State */
 	enum					GameState { Alive, Dying, Transcending };
 	GameState				State = GameState.Alive;
 	int						Level = 0;
@@ -18,7 +24,10 @@ public class Rocket : MonoBehaviour
 	void	Start()
 	{
 		RB_Rocket = GetComponent<Rigidbody>();
-		A_RocketRumble = GetComponent<AudioSource>();
+		A_Audio = GetComponent<AudioSource>();
+		RB_Rocket.constraints = RigidbodyConstraints.FreezePositionZ;
+		RB_Rocket.constraints = RigidbodyConstraints.FreezeRotationX;
+		RB_Rocket.constraints = RigidbodyConstraints.FreezeRotationY;
 	}
 
 	// Update is called once per frame
@@ -31,35 +40,40 @@ public class Rocket : MonoBehaviour
 	{
 		if (State == GameState.Alive)
 		{
-			Thrust();
-			Rotate();
+			RespondToThrustInput();
+			RespondToRotateInput();
 		}
 	}
 
-	void	Thrust()
+	void	RespondToThrustInput()
 	{
-		if (Input.GetKey(KeyCode.Space)) /** Thruster */
+		if (Input.GetKey(KeyCode.Space))
 		{
-			float	ThrustThisFrame = MainThrust * Time.deltaTime;
-			RB_Rocket.AddRelativeForce(Vector3.up * ThrustThisFrame);
-			if (!A_RocketRumble.isPlaying)
-				A_RocketRumble.Play();
+			ApplyThrust();
 		}
 		else
 		{
-			A_RocketRumble.Stop();
+			A_Audio.Stop();
 		}
 	}
 
-	void	Rotate()
+	void	ApplyThrust()
+	{
+		float	ThrustThisFrame = MainThrust * Time.deltaTime;
+		RB_Rocket.AddRelativeForce(Vector3.up * ThrustThisFrame);
+		if (!A_Audio.isPlaying)
+			A_Audio.PlayOneShot(EngineThrust);
+	}
+
+	void	RespondToRotateInput()
 	{
 		RB_Rocket.freezeRotation = true;
-		if (Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A)) /** Tilt left */
+		if (Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A))
 		{
 			float	RotationThisFrame = RcsThrust * Time.deltaTime;
 			transform.Rotate(Vector3.forward * RotationThisFrame);
 		}
-		else if (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D)) /** Tilt right */
+		else if (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D))
 		{
 			float	RotationThisFrame = RcsThrust * Time.deltaTime;
 			transform.Rotate(-Vector3.forward * RotationThisFrame);
@@ -76,14 +90,28 @@ public class Rocket : MonoBehaviour
 				// do nothing
 				break;
 			case "Win":
-				State = GameState.Transcending;
-				Invoke("LoadNextLevel", 1f);
+				StartWinSequence();
 				break;
 			default:
-				State = GameState.Dying;
-				Invoke("LoadFirstLevel", 1f);
+				StartDeathSequence();
 				break;
 		}
+	}
+
+	void	StartWinSequence()
+	{
+		State = GameState.Transcending;
+		A_Audio.Stop();
+		A_Audio.PlayOneShot(OnWin);
+		Invoke("LoadNextLevel", 1f);
+	}
+
+	void	StartDeathSequence()
+	{
+		State = GameState.Dying;
+		A_Audio.Stop();
+		A_Audio.PlayOneShot(OnDeath);
+		Invoke("LoadFirstLevel", 1f);
 	}
 
 	void	LoadNextLevel()
