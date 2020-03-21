@@ -1085,6 +1085,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MovementVector: {x: 20, y: 0, z: 0}
+  Period: 0.5
   MovementFactor: 0
 --- !u!4 &2114317549 stripped
 Transform:

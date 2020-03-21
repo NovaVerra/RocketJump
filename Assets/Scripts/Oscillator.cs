@@ -25,6 +25,11 @@ public class Oscillator : MonoBehaviour
 	// Update is called once per frame
 	void Update()
 	{
+		if (Period <= Mathf.Epsilon)
+		{
+			Debug.LogError("Cannot divide by 0");
+			return ;
+		}
 		float		Cycle = Time.time * Period;				// frame rate independent
 		const float	Tau = Mathf.PI * 2;
 		float		RawSinWave = Mathf.Sin(Cycle * Tau);	// goes from -1 to +1
