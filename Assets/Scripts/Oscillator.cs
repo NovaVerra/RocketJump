@@ -7,9 +7,11 @@ public class Oscillator : MonoBehaviour
 {
 	/** Game Configuration */
 	[SerializeField]
-	Vector3	MovementVector;
+	Vector3	MovementVector = new Vector3(10f, 10f, 10f);
+	[SerializeField]
+	float	Period = 0.5f;
 
-	[Range(0, 1)] [SerializeField] 
+	[Range(0, 1)] [SerializeField]
 	float	MovementFactor;
 
 	Vector3	StartingPosition;
@@ -23,6 +25,10 @@ public class Oscillator : MonoBehaviour
 	// Update is called once per frame
 	void Update()
 	{
+		float		Cycle = Time.time * Period;				// frame rate independent
+		const float	Tau = Mathf.PI * 2;
+		float		RawSinWave = Mathf.Sin(Cycle * Tau);	// goes from -1 to +1
+		MovementFactor = RawSinWave / 2f + 0.5f;			// goes from 0 to 1
 		Vector3	Offset = MovementVector * MovementFactor;
 		transform.position = StartingPosition + Offset;
 	}
