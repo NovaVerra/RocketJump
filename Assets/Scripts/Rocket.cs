@@ -5,15 +5,20 @@ using UnityEngine;
 
 public class Rocket : MonoBehaviour
 {
-
 	/** Game Configurations */
 	Rigidbody	RB_Rocket;
-	AudioSource	A_Audio;
-	[SerializeField] float		RcsThrust = 300f;
-	[SerializeField] float		MainThrust = 300f;
-	[SerializeField] AudioClip	EngineThrust;
-	[SerializeField] AudioClip	OnDeath;
-	[SerializeField] AudioClip	OnWin;
+	AudioSource	S_Sound;
+
+	[SerializeField] float			RcsThrust = 300f;
+	[SerializeField] float			MainThrust = 300f;
+
+	[SerializeField] AudioClip		S_EngineThrust;
+	[SerializeField] AudioClip		S_OnDeath;
+	[SerializeField] AudioClip		S_OnWin;
+
+	[SerializeField] ParticleSystem	PS_EngineThrust;
+	[SerializeField] ParticleSystem	PS_OnCollision;
+	[SerializeField] ParticleSystem	PS_OnWin;
 
 	/** Game State */
 	enum					GameState { Alive, Dying, Transcending };
@@ -24,7 +29,7 @@ public class Rocket : MonoBehaviour
 	void	Start()
 	{
 		RB_Rocket = GetComponent<Rigidbody>();
-		A_Audio = GetComponent<AudioSource>();
+		S_Sound = GetComponent<AudioSource>();
 		RB_Rocket.constraints = RigidbodyConstraints.FreezePositionZ;
 		RB_Rocket.constraints = RigidbodyConstraints.FreezeRotationX;
 		RB_Rocket.constraints = RigidbodyConstraints.FreezeRotationY;
@@ -53,7 +58,8 @@ public class Rocket : MonoBehaviour
 		}
 		else
 		{
-			A_Audio.Stop();
+			S_Sound.Stop();
+			PS_EngineThrust.Stop();
 		}
 	}
 
@@ -61,8 +67,11 @@ public class Rocket : MonoBehaviour
 	{
 		float	ThrustThisFrame = MainThrust * Time.deltaTime;
 		RB_Rocket.AddRelativeForce(Vector3.up * ThrustThisFrame);
-		if (!A_Audio.isPlaying)
-			A_Audio.PlayOneShot(EngineThrust);
+		if (!S_Sound.isPlaying)
+		{
+			S_Sound.PlayOneShot(S_EngineThrust);
+		}
+		PS_EngineThrust.Play();
 	}
 
 	void	RespondToRotateInput()
@@ -101,16 +110,18 @@ public class Rocket : MonoBehaviour
 	void	StartWinSequence()
 	{
 		State = GameState.Transcending;
-		A_Audio.Stop();
-		A_Audio.PlayOneShot(OnWin);
+		S_Sound.Stop();
+		S_Sound.PlayOneShot(S_OnWin);
+		PS_OnWin.Play();
 		Invoke("LoadNextLevel", 1f);
 	}
 
 	void	StartDeathSequence()
 	{
 		State = GameState.Dying;
-		A_Audio.Stop();
-		A_Audio.PlayOneShot(OnDeath);
+		S_Sound.Stop();
+		S_Sound.PlayOneShot(S_OnDeath);
+		PS_OnCollision.Play();
 		Invoke("LoadFirstLevel", 1f);
 	}
 
