@@ -62,8 +62,7 @@ public class Rocket : MonoBehaviour
 		}
 		else
 		{
-			S_Sound.Stop();
-			PS_EngineThrust.Stop();
+			StopApplyingThrust();
 		}
 	}
 
@@ -76,6 +75,12 @@ public class Rocket : MonoBehaviour
 			S_Sound.PlayOneShot(S_EngineThrust);
 		}
 		PS_EngineThrust.Play();
+	}
+	
+	void	StopApplyingThrust()
+	{
+		S_Sound.Stop();
+		PS_EngineThrust.Stop();
 	}
 
 	void	RespondToRotateInput()
@@ -144,7 +149,11 @@ public class Rocket : MonoBehaviour
 
 	void	LoadNextLevel()
 	{
-		SceneManager.LoadScene(1);
+		int	CurrentLevel = SceneManager.GetActiveScene().buildIndex;
+		int	NextLevel = CurrentLevel + 1;
+		if (CurrentLevel == SceneManager.sceneCountInBuildSettings - 1)
+			LoadFirstLevel();
+		SceneManager.LoadScene(NextLevel);
 		State = GameState.Alive;
 	}
 
