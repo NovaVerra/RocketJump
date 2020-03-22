@@ -85,7 +85,7 @@ public class Rocket : MonoBehaviour
 
 	void	RespondToRotateInput()
 	{
-		RB_Rocket.freezeRotation = true;
+		RB_Rocket.angularVelocity = Vector3.zero;	// set angular velocity to 0 - remove rotation due to physics
 		if (Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A))
 		{
 			float	RotationThisFrame = RcsThrust * Time.deltaTime;
@@ -96,7 +96,6 @@ public class Rocket : MonoBehaviour
 			float	RotationThisFrame = RcsThrust * Time.deltaTime;
 			transform.Rotate(-Vector3.forward * RotationThisFrame);
 		}
-		RB_Rocket.freezeRotation = false;
 	}
 
 	void	RespondToDeveloper()
