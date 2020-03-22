@@ -6,6 +6,7 @@ using UnityEngine;
 public class Rocket : MonoBehaviour
 {
 	/** Game Configurations */
+	bool		DeveloperMode = false;
 	Rigidbody	RB_Rocket;
 	AudioSource	S_Sound;
 
@@ -48,6 +49,8 @@ public class Rocket : MonoBehaviour
 		{
 			RespondToThrustInput();
 			RespondToRotateInput();
+			if (Debug.isDebugBuild)
+				RespondToDeveloper();
 		}
 	}
 
@@ -91,9 +94,22 @@ public class Rocket : MonoBehaviour
 		RB_Rocket.freezeRotation = false;
 	}
 
+	void	RespondToDeveloper()
+	{
+		if (Input.GetKeyDown(KeyCode.L))
+		{
+			LoadNextLevel();
+		}
+		if (Input.GetKeyDown(KeyCode.C))
+		{
+			DeveloperMode = !DeveloperMode;
+			print("Developer mode is toggled");
+		}
+	}
+
 	void	OnCollisionEnter(Collision CollisionEvent)
 	{
-		if (State != GameState.Alive) { return; }
+		if (State != GameState.Alive || DeveloperMode) { return; }
 		switch (CollisionEvent.gameObject.tag)
 		{
 			case "Friendly":
